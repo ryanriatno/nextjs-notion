@@ -2,7 +2,6 @@ import { useRouter } from 'next/router'
 import { NotionRenderer } from 'react-notion'
 import ErrorPage from 'next/error'
 import Container from '../../components/container'
-import PostBody from '../../components/post-body'
 import Header from '../../components/header'
 import PostHeader from '../../components/post-header'
 import Layout from '../../components/layout'
@@ -11,14 +10,16 @@ import PostTitle from '../../components/post-title'
 import Head from 'next/head'
 import { CMS_NAME } from '../../lib/constants'
 import PostType from '../../../types/post'
+import Author from '../../../types/author'
 
 type Props = {
   post: PostType
+  author: Author,
   blocks: any
   preview?: boolean
 }
 
-const Post = ({ blocks, post, preview }: Props) => {
+const Post = ({ blocks, post, author, preview }: Props) => {
   const router = useRouter()
   if (!router.isFallback && !post?.slug) {
     return <ErrorPage statusCode={404} />
@@ -67,6 +68,7 @@ export async function getStaticProps({ params }: Params) {
   const { slug } = params
   const posts = await getAllPosts()
   const post = posts.find((p: PostType) => p.slug === slug)
+  const author = post.author[0]
 
   const blocks = await fetch(`${process.env.NEXT_PUBLIC_API_URL}page/${post.id}`).then((res) => res.json());
 
@@ -74,6 +76,7 @@ export async function getStaticProps({ params }: Params) {
     props: {
       blocks,
       post,
+      author
     },
   }
 }

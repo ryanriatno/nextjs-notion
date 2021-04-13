@@ -5,7 +5,7 @@ type PostType = {
   title: string
   date: string
   coverImage: Array<{name: string, url: string, rawUrl: string}>
-  author: Author
+  author?: Author
   status: any
   excerpt: string
   ogImage: {
