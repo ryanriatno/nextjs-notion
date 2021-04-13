@@ -1,5 +1,5 @@
 module.exports = {
-  purge: ['./components/**/*.tsx', './pages/**/*.tsx'],
+  purge: ['./src/components/**/*.tsx', './src/pages/**/*.tsx'],
   theme: {
     extend: {
       colors: {
@@ -30,4 +30,7 @@ module.exports = {
       },
     },
   },
+  plugins: [
+    require('@tailwindcss/forms'),
+  ]
 }

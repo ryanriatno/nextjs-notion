@@ -1,24 +1,24 @@
 import { useRouter } from 'next/router'
+import { NotionRenderer } from 'react-notion'
 import ErrorPage from 'next/error'
 import Container from '../../components/container'
 import PostBody from '../../components/post-body'
 import Header from '../../components/header'
 import PostHeader from '../../components/post-header'
 import Layout from '../../components/layout'
-import { getPostBySlug, getAllPosts } from '../../lib/api'
+import getAllPosts from 'utils/getAllPosts'
 import PostTitle from '../../components/post-title'
 import Head from 'next/head'
 import { CMS_NAME } from '../../lib/constants'
-import markdownToHtml from '../../lib/markdownToHtml'
-import PostType from '../../types/post'
+import PostType from '../../../types/post'
 
 type Props = {
   post: PostType
-  morePosts: PostType[]
+  blocks: any
   preview?: boolean
 }
 
-const Post = ({ post, morePosts, preview }: Props) => {
+const Post = ({ blocks, post, preview }: Props) => {
   const router = useRouter()
   if (!router.isFallback && !post?.slug) {
     return <ErrorPage statusCode={404} />
@@ -36,15 +36,17 @@ const Post = ({ post, morePosts, preview }: Props) => {
                 <title>
                   {post.title} | Next.js Blog Example with {CMS_NAME}
                 </title>
-                <meta property="og:image" content={post.ogImage.url} />
+                <meta property="og:image" content={post.coverImage[0].url} />
               </Head>
               <PostHeader
                 title={post.title}
-                coverImage={post.coverImage}
+                coverImage={post.coverImage[0].url}
                 date={post.date}
                 author={post.author}
               />
-              <PostBody content={post.content} />
+              <div className="max-w-2xl mx-auto">
+                <NotionRenderer blockMap={blocks} />
+              </div>
             </article>
           </>
         )}
@@ -62,38 +64,31 @@ type Params = {
 }
 
 export async function getStaticProps({ params }: Params) {
-  const post = getPostBySlug(params.slug, [
-    'title',
-    'date',
-    'slug',
-    'author',
-    'content',
-    'ogImage',
-    'coverImage',
-  ])
-  const content = await markdownToHtml(post.content || '')
+  const { slug } = params
+  const posts = await getAllPosts()
+  const post = posts.find((p: PostType) => p.slug === slug)
+
+  const blocks = await fetch(`${process.env.NEXT_PUBLIC_API_URL}page/${post.id}`).then((res) => res.json());
 
   return {
     props: {
-      post: {
-        ...post,
-        content,
-      },
+      blocks,
+      post,
     },
   }
 }
 
 export async function getStaticPaths() {
-  const posts = getAllPosts(['slug'])
-
+  const posts = await getAllPosts();
   return {
-    paths: posts.map((posts) => {
+    paths: posts.map((posts: PostType) => {
       return {
         params: {
-          slug: posts.slug,
-        },
+          slug: posts.slug
+        }
       }
     }),
-    fallback: false,
+    fallback: true,
   }
+
 }

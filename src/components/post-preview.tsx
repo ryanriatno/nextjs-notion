@@ -2,7 +2,7 @@ import Avatar from './avatar'
 import DateFormatter from './date-formatter'
 import CoverImage from './cover-image'
 import Link from 'next/link'
-import Author from '../types/author'
+import Author from '../../types/author'
 
 type Props = {
   title: string
@@ -35,7 +35,7 @@ const PostPreview = ({
         <DateFormatter dateString={date} />
       </div>
       <p className="text-lg leading-relaxed mb-4">{excerpt}</p>
-      <Avatar name={author.name} picture={author.picture} />
+      <Avatar name={author.fullName} picture={author.profilePhoto} />
     </div>
   )
 }
