@@ -1,7 +1,7 @@
 import Container from 'components/container'
 import MoreStories from 'components/more-stories'
 import Intro from 'components/intro'
-import Layout from 'components/layout'
+import Layout from 'components/Layout'
 import getAllPosts from 'utils/getAllPosts'
 import Head from 'next/head'
 import { CMS_NAME } from 'lib/constants'

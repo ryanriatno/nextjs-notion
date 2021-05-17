@@ -1,14 +1,14 @@
 import { useRouter } from 'next/router'
 import { NotionRenderer } from 'react-notion'
 import ErrorPage from 'next/error'
-import Container from '../../components/container'
-import Header from '../../components/header'
-import PostHeader from '../../components/post-header'
-import Layout from '../../components/layout'
+import Container from 'components/container'
+import Header from 'components/header'
+import PostHeader from 'components/post-header'
+import Layout from 'components/Layout'
 import getAllPosts from 'utils/getAllPosts'
-import PostTitle from '../../components/post-title'
+import PostTitle from 'components/post-title'
 import Head from 'next/head'
-import { CMS_NAME } from '../../lib/constants'
+import { CMS_NAME } from 'lib/constants'
 import PostType from '../../../types/post'
 import Author from '../../../types/author'
 
@@ -19,7 +19,7 @@ type Props = {
   preview?: boolean
 }
 
-const Post = ({ blocks, post, author, preview }: Props) => {
+const Post = ({ blocks, post, preview }: Props) => {
   const router = useRouter()
   if (!router.isFallback && !post?.slug) {
     return <ErrorPage statusCode={404} />
